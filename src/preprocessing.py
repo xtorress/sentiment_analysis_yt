@@ -27,7 +27,7 @@ class DataPreprocessor:
         return text.split()
 
     def remove_stopwords(self, tokens: List[str]) -> List[str]:
-        return [word for word in tokens if word not in stopwords]
+        return [word for word in tokens if word not in self.stop_words]
 
     def preprocess(self, text):
         cleaned = self.clean_text(text)
