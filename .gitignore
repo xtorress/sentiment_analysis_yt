@@ -170,4 +170,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-./data/glove.6B.100d.txt
+data/glove.6B.100d.txt
