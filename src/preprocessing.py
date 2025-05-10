@@ -33,5 +33,5 @@ class DataPreprocessor:
         cleaned = self.clean_text(text)
         tokens = self.tokenize(cleaned)
         tokens = self.remove_stopwords(tokens)
-        return "".join(tokens)
+        return " ".join(tokens)
 
