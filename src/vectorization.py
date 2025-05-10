@@ -1,8 +1,6 @@
-from src.preprocessing import DataPreprocessor
-import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from typing import List
 import numpy as np
+from pathlib import Path
 import logging
 
 class Vectorizer():
@@ -44,11 +42,14 @@ class Vectorizer():
             return self.vectorizer.fit_transform()
         return self.transform(tokens)
 
-    def _load_glove_model(self, paht_file='../data/glove.6B.100d.txt'):
+    def _load_glove_model(self, file_path='../data/glove.6B.100d.txt'):
         """Save glove's embeddings."""
+        if not Path(file_path).exists():
+            raise FileNotFoundError(f"GloVe file not found at: {file_path}. \
+                                    Please download it and place it in the 'data/' folder.")
         print("Cargando glove.")
         embeddings = {}
-        with open(paht_file, 'r', encoding='utf-8') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             for line in f:
                 values = line.strip().split()
                 word = values[0]
