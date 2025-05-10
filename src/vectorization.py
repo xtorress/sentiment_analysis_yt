@@ -1,4 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sentence_transformers import SentenceTransformer
 import numpy as np
 from pathlib import Path
 import logging
@@ -23,7 +24,7 @@ class Vectorizer():
         elif method == "glove":
             self.model = self._load_glove_model()
         elif method == "sbert":
-            pass
+            self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
     def fit(self, tokens):
         """Train vectorizer."""
@@ -35,6 +36,8 @@ class Vectorizer():
             return self.vectorizer.transform(tokens).toarray()
         elif self.method == 'glove':
             return np.mean([self.model[token] for token in tokens if token in self.model], axis=0)
+        elif self.method == 'sbert':
+            return self.model.encode(tokens)
 
     def fit_transform(self, tokens):
         """Fit and transform data."""
