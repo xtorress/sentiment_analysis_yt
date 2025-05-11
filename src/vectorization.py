@@ -12,7 +12,7 @@ class Vectorizer:
     def __init__(self, method: str):
         method = method.lower()
         valid_methods = ["tfidf", "glove", "sbert"]
-        if method is not valid_methods:
+        if method not in valid_methods:
             raise ValueError(f"El método debe de ser una de: {valid_methods}")
 
         self.method = method
@@ -35,6 +35,7 @@ class Vectorizer:
         if self.method == 'tfid':
             return self.vectorizer.transform(tokens).toarray()
         elif self.method == 'glove':
+            tokens = tokens.split()
             return np.mean([self.model[token] for token in tokens if token in self.model], axis=0)
         elif self.method == 'sbert':
             return self.model.encode(tokens)
