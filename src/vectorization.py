@@ -3,6 +3,12 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 from pathlib import Path
 import logging
+from enum import Enum
+
+class VectMethod(Enum):
+    TFIDF = "tfidf"
+    GLOVE = "glove"
+    SBERT = "sbert"
 
 class Vectorizer:
     """
@@ -10,40 +16,39 @@ class Vectorizer:
     embeddings.
     """
     def __init__(self, method: str):
-        method = method.lower()
-        valid_methods = ["tfidf", "glove", "sbert"]
-        if method not in valid_methods:
-            raise ValueError(f"El método debe de ser una de: {valid_methods}")
-
-        self.method = method
+        try:
+            self.method = VectMethod(method.lower())
+        except ValueError:
+            raise ValueError(f"Método no soportado, debe ser: {[m for m in VectMethod]}")
+        
         self.vectorizer = None
         self.model = None
 
-        if method == "tfidf":
+        if self.method == VectMethod.TFIDF:
             self.vectorizer = TfidfVectorizer()
-        elif method == "glove":
+        elif self.method == VectMethod.GLOVE:
             self.model = self._load_glove_model()
-        elif method == "sbert":
+        elif self.method == VectMethod.SBERT:
             self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
     def fit(self, tokens):
         """Train vectorizer."""
-        if self.method == "tfidf":
+        if self.method == VectMethod.TFIDF:
             return self.vectorizer.fit(tokens)
 
     def transform(self, tokens):
-        if self.method == 'tfid':
-            return self.vectorizer.transform(tokens).toarray()
-        elif self.method == 'glove':
+        if self.method == VectMethod.TFIDF:
+            return self.vectorizer.transform(tokens)
+        elif self.method == VectMethod.GLOVE:
             tokens = tokens.split()
             return np.mean([self.model[token] for token in tokens if token in self.model], axis=0)
-        elif self.method == 'sbert':
+        elif self.method == VectMethod.SBERT:
             return self.model.encode(tokens)
 
     def fit_transform(self, tokens):
         """Fit and transform data."""
-        if self.method == "tfidf":
-            return self.vectorizer.fit_transform()
+        if self.method == VectMethod.TFIDF:
+            return self.vectorizer.fit_transform(tokens)
         return self.transform(tokens)
 
     def _load_glove_model(self, file_path='../data/glove.6B.100d.txt'):
