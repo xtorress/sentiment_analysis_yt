@@ -1,10 +1,9 @@
 import logging
 import re
 import unicodedata
-import nltk
 from nltk.corpus import stopwords
 from typing import List
-from nltk_setup import NLTKSetup
+from src.nltk_setup import NLTKSetup
 
 nltk_setup = NLTKSetup()
 nltk_setup.download_resources()
