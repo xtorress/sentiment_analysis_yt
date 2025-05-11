@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 import logging
 
-class Vectorizer():
+class Vectorizer:
     """
     A flexible text vectorization class suporting TF-IDF, Glove and SBERT
     embeddings.
