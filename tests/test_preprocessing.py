@@ -1,4 +1,5 @@
 import pytest
+import pandas as pd
 from src.nltk_setup import NLTKSetup
 
 from src.preprocessing import DataPreprocessor
@@ -33,4 +34,12 @@ def test_preprocess_integration(preprocessor):
     preprocess = preprocessor.preprocess(text)
     assert "Hello" not in preprocess
     assert "." not in preprocess
-    assert "hello world test" == preprocess 
+    assert "hello world test" == preprocess
+
+def test_with_dataframe(preprocessor):
+    df = pd.DataFrame({
+        "text": ["hello ...2 bye", "Text!! prueba"],
+        "isToxic": [True, False]
+    })
+    preprocess = df["text"].apply(preprocessor.preprocess)
+    assert preprocess.to_list() == ["hello bye", "text prueba"], preprocess
