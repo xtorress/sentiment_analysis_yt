@@ -31,27 +31,33 @@ class Vectorizer:
         elif self.method == VectMethod.SBERT:
             self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    def fit(self, tokens):
+    def fit(self, texts):
         """Train vectorizer."""
         if self.method == VectMethod.TFIDF:
-            return self.vectorizer.fit(tokens)
+            return self.vectorizer.fit(texts)
 
-    def transform(self, tokens):
+    def transform(self, texts):
         if self.method == VectMethod.TFIDF:
-            return self.vectorizer.transform(tokens)
+            return self.vectorizer.transform(texts)
         elif self.method == VectMethod.GLOVE:
-            tokens = tokens.split()
-            return np.mean([self.model[token] for token in tokens if token in self.model], axis=0)
+            vectors = []
+            for text in texts:
+                vector = [self.model[token] for token in text if token in self.model]
+                if vector:
+                    vectors.append(np.mean(vector, axis=0))
+                else:
+                    vectors.append(np.zeros(100))
+            return vectors
         elif self.method == VectMethod.SBERT:
-            return self.model.encode(tokens)
+            return self.model.encode(texts)
 
-    def fit_transform(self, tokens):
+    def fit_transform(self, texts):
         """Fit and transform data."""
         if self.method == VectMethod.TFIDF:
-            return self.vectorizer.fit_transform(tokens)
-        return self.transform(tokens)
+            return self.vectorizer.fit_transform(texts)
+        return self.transform(texts)
 
-    def _load_glove_model(self, file_path='../data/glove.6B.100d.txt'):
+    def _load_glove_model(self, file_path='data/glove.6B.100d.txt'):
         """Save glove's embeddings."""
         if not Path(file_path).exists():
             raise FileNotFoundError(f"GloVe file not found at: {file_path}. \
