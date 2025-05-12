@@ -15,6 +15,8 @@ class Vectorizer:
     A flexible text vectorization class suporting TF-IDF, Glove and SBERT
     embeddings.
     """
+    _sbert_model = None
+
     def __init__(self, method: str):
         try:
             self.method = VectMethod(method.lower())
@@ -29,7 +31,9 @@ class Vectorizer:
         elif self.method == VectMethod.GLOVE:
             self.model = self._load_glove_model()
         elif self.method == VectMethod.SBERT:
-            self.model = SentenceTransformer("all-MiniLM-L6-v2")
+            if Vectorizer._sbert_model is None:
+                self.model = SentenceTransformer("all-MiniLM-L6-v2")
+            self.model = Vectorizer._sbert_model
 
     def fit(self, texts):
         """Train vectorizer."""
@@ -49,7 +53,7 @@ class Vectorizer:
                     vectors.append(np.zeros(100))
             return vectors
         elif self.method == VectMethod.SBERT:
-            return self.model.encode(texts)
+            return self.model.encode(texts.tolist())
 
     def fit_transform(self, texts):
         """Fit and transform data."""
