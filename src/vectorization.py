@@ -32,7 +32,7 @@ class Vectorizer:
             self.model = self._load_glove_model()
         elif self.method == VectMethod.SBERT:
             if Vectorizer._sbert_model is None:
-                self.model = SentenceTransformer("all-MiniLM-L6-v2")
+                Vectorizer._sbert_model = SentenceTransformer("all-MiniLM-L6-v2")
             self.model = Vectorizer._sbert_model
 
     def fit(self, texts):
