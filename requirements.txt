@@ -3,3 +3,9 @@ pandas
 numpy
 seaborn
 matplotlib
+pytest
+scikit-learn
+scipy
+sentence-transformers
+nltk
+wordcloud
